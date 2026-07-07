@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const path    = require('path');
 const connectDB = require('./src/db/database');
 
 const app = express();
@@ -14,7 +15,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// ─── ROUTES ───────────────────────────────────────────────────────────────────
+// ─── API ROUTES ───────────────────────────────────────────────────────────────
 app.use('/api/bill',       require('./src/routes/billRoutes'));
 app.use('/api/parse',      require('./src/routes/parserRoutes'));
 app.use('/api/products',   require('./src/routes/productRoutes'));
@@ -22,26 +23,13 @@ app.use('/api/invoices',   require('./src/routes/invoiceRoutes'));
 app.use('/api/aliases',    require('./src/routes/aliasRoutes'));
 app.use('/api/transcribe', require('./src/routes/transcribeRoutes'));
 
-// ─── HEALTH CHECK ─────────────────────────────────────────────────────────────
-app.get('/', (req, res) => {
-  res.json({
-    message: '🎙️ Voice Billing API is running!',
-    version: '1.0.0',
-    database: 'MongoDB',
-    endpoints: {
-      parse:       'POST /api/parse',
-      transcribe:  'POST /api/transcribe',
-      products:    'GET|POST /api/products',
-      search:      'POST /api/products/search',
-      invoices:    'GET|POST /api/invoices',
-      aliases:     'GET|POST /api/aliases',
-    },
-  });
-});
+// ─── SERVE REACT FRONTEND ─────────────────────────────────────────────────────
+const clientBuild = path.join(__dirname, 'client', 'build');
+app.use(express.static(clientBuild));
 
-// ─── 404 HANDLER ──────────────────────────────────────────────────────────────
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: `Route ${req.method} ${req.path} not found.` });
+// All non-API routes → React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(clientBuild, 'index.html'));
 });
 
 // ─── ERROR HANDLER ────────────────────────────────────────────────────────────
@@ -56,12 +44,11 @@ const PORT = process.env.PORT || 3000;
 connectDB().then(() => {
   const server = app.listen(PORT, () => {
     console.log(`\n🚀 Server running at http://localhost:${PORT}`);
-    console.log(`📋 Health check: http://localhost:${PORT}/`);
   });
 
   server.on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
-      console.error(`❌ Port ${PORT} is already in use. Close the other process and try again.`);
+      console.error(`❌ Port ${PORT} is already in use.`);
       process.exit(1);
     } else {
       throw err;
