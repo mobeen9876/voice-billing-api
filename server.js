@@ -15,11 +15,12 @@ app.use((req, res, next) => {
 });
 
 // ─── ROUTES ───────────────────────────────────────────────────────────────────
-app.use('/api/bill',     require('./src/routes/billRoutes'));
-app.use('/api/parse',    require('./src/routes/parserRoutes'));
-app.use('/api/products', require('./src/routes/productRoutes'));
-app.use('/api/invoices', require('./src/routes/invoiceRoutes'));
-app.use('/api/aliases',  require('./src/routes/aliasRoutes'));
+app.use('/api/bill',       require('./src/routes/billRoutes'));
+app.use('/api/parse',      require('./src/routes/parserRoutes'));
+app.use('/api/products',   require('./src/routes/productRoutes'));
+app.use('/api/invoices',   require('./src/routes/invoiceRoutes'));
+app.use('/api/aliases',    require('./src/routes/aliasRoutes'));
+app.use('/api/transcribe', require('./src/routes/transcribeRoutes'));
 
 // ─── HEALTH CHECK ─────────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
@@ -28,11 +29,12 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     database: 'MongoDB',
     endpoints: {
-      parse:    'POST /api/parse',
-      products: 'GET|POST /api/products',
-      search:   'POST /api/products/search',
-      invoices: 'GET|POST /api/invoices',
-      aliases:  'GET|POST /api/aliases',
+      parse:       'POST /api/parse',
+      transcribe:  'POST /api/transcribe',
+      products:    'GET|POST /api/products',
+      search:      'POST /api/products/search',
+      invoices:    'GET|POST /api/invoices',
+      aliases:     'GET|POST /api/aliases',
     },
   });
 });
