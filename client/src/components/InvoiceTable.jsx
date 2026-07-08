@@ -1,37 +1,18 @@
-import React from 'react';
-import './InvoiceTable.css';
+import styles from './InvoiceTable.module.css'
 
-// Sample static data — will be replaced with real API data later
-const SAMPLE_INVOICE = {
-  invoice_no: 'INV-2025-07-0001',
-  items: [
-    { product_name: 'Oppo A56 Tempered Glass', quantity: 3, price: 250, total: 750 },
-    { product_name: 'Charger 35W Original',    quantity: 2, price: 650, total: 1300 },
-    { product_name: 'Type C Cable Original',   quantity: 1, price: 120, total: 120 },
-  ],
-  subtotal: 2170,
-  total:    2170,
-  status:   'saved',
-};
-
-function InvoiceTable({ invoice = SAMPLE_INVOICE }) {
-  if (!invoice || !invoice.items || invoice.items.length === 0) {
-    return null;
-  }
+function InvoiceTable({ invoice }) {
+  if (!invoice || !invoice.items || invoice.items.length === 0) return null
 
   return (
-    <div className="invoice-card">
-
-      {/* Header */}
-      <div className="invoice-header">
-        <h3 className="invoice-title">🧾 Invoice</h3>
-        <span className="invoice-no">{invoice.invoice_no}</span>
-        <span className={`invoice-status ${invoice.status}`}>{invoice.status}</span>
+    <div className={styles.card}>
+      <div className={styles.header}>
+        <h3 className={styles.title}>🧾 Invoice</h3>
+        <span className={styles.invoiceNo}>{invoice.invoice_no}</span>
+        <span className={`${styles.status} ${styles[invoice.status]}`}>{invoice.status}</span>
       </div>
 
-      {/* Table */}
-      <div className="invoice-table-wrapper">
-        <table className="invoice-table">
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
           <thead>
             <tr>
               <th>#</th>
@@ -53,11 +34,11 @@ function InvoiceTable({ invoice = SAMPLE_INVOICE }) {
             ))}
           </tbody>
           <tfoot>
-            <tr className="subtotal-row">
+            <tr className={styles.subtotalRow}>
               <td colSpan="4">Subtotal</td>
               <td>Rs. {invoice.subtotal.toLocaleString()}</td>
             </tr>
-            <tr className="total-row">
+            <tr className={styles.totalRow}>
               <td colSpan="4">Total</td>
               <td>Rs. {invoice.total.toLocaleString()}</td>
             </tr>
@@ -65,18 +46,12 @@ function InvoiceTable({ invoice = SAMPLE_INVOICE }) {
         </table>
       </div>
 
-      {/* Actions */}
-      <div className="invoice-actions">
-        <button className="btn-print" onClick={() => window.print()}>
-          🖨️ Print
-        </button>
-        <button className="btn-new">
-          ➕ New Bill
-        </button>
+      <div className={styles.actions}>
+        <button className={styles.printBtn} onClick={() => window.print()}>🖨️ Print</button>
+        <button className={styles.newBtn} onClick={() => window.location.reload()}>➕ New Bill</button>
       </div>
-
     </div>
-  );
+  )
 }
 
-export default InvoiceTable;
+export default InvoiceTable

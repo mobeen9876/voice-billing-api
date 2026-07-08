@@ -24,7 +24,7 @@ app.use('/api/aliases',    require('./src/routes/aliasRoutes'));
 app.use('/api/transcribe', require('./src/routes/transcribeRoutes'));
 
 // ─── SERVE REACT FRONTEND ─────────────────────────────────────────────────────
-const clientBuild = path.join(__dirname, 'client', 'build');
+const clientBuild = path.join(__dirname, 'client', 'dist');
 app.use(express.static(clientBuild));
 
 // All non-API routes → React app

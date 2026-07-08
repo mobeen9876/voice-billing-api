@@ -1,61 +1,49 @@
-import React, { useState } from 'react';
-import './ProductNotFound.css';
+import { useState } from 'react'
+import styles from './ProductNotFound.module.css'
 
-// Sample static data — will be replaced with real data later
-const SAMPLE_MISSING = [
-  { brand: 'Samsung', model: 'A15', category: 'Glass' },
-  { category: 'Earphones' },
-];
-
-function ProductNotFound({ missingProducts = SAMPLE_MISSING, onSubmit, onSkip }) {
+function ProductNotFound({ missingProducts = [], onSubmit, onSkip }) {
   const [prices, setPrices] = useState(
     missingProducts.reduce((acc, _, i) => ({ ...acc, [i]: '' }), {})
-  );
+  )
 
-  const handlePriceChange = (index, value) => {
-    setPrices((prev) => ({ ...prev, [index]: value }));
-  };
+  const handleChange = (index, value) =>
+    setPrices((prev) => ({ ...prev, [index]: value }))
 
   const handleSubmit = () => {
     const result = missingProducts.map((product, i) => ({
       ...product,
       price: parseFloat(prices[i]) || 0,
-    }));
-    if (onSubmit) onSubmit(result);
-  };
+    }))
+    if (onSubmit) onSubmit(result)
+  }
 
-  const allFilled = missingProducts.every((_, i) => prices[i] && prices[i] > 0);
+  const allFilled = missingProducts.every((_, i) => prices[i] && prices[i] > 0)
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-card">
-
-        {/* Header */}
-        <div className="modal-header">
-          <span className="modal-icon">⚠️</span>
-          <h3 className="modal-title">Products Not Found</h3>
+    <div className={styles.overlay}>
+      <div className={styles.card}>
+        <div className={styles.header}>
+          <span className={styles.icon}>⚠️</span>
+          <h3 className={styles.title}>Products Not Found</h3>
         </div>
-        <p className="modal-subtitle">
+        <p className={styles.subtitle}>
           These products are not in the database. Enter their selling price to create them.
         </p>
 
-        {/* Product rows */}
-        <div className="modal-items">
+        <div className={styles.items}>
           {missingProducts.map((product, index) => (
-            <div className="modal-item" key={index}>
-              <div className="modal-item-name">
-                {[product.brand, product.model, product.category]
-                  .filter(Boolean)
-                  .join(' ')}
-              </div>
-              <div className="modal-item-price">
-                <span className="price-prefix">Rs.</span>
+            <div className={styles.item} key={index}>
+              <span className={styles.itemName}>
+                {[product.brand, product.model, product.category].filter(Boolean).join(' ')}
+              </span>
+              <div className={styles.itemPrice}>
+                <span className={styles.prefix}>Rs.</span>
                 <input
                   type="number"
-                  className="price-input"
+                  className={styles.priceInput}
                   placeholder="Enter price"
                   value={prices[index]}
-                  onChange={(e) => handlePriceChange(index, e.target.value)}
+                  onChange={(e) => handleChange(index, e.target.value)}
                   min="0"
                 />
               </div>
@@ -63,23 +51,15 @@ function ProductNotFound({ missingProducts = SAMPLE_MISSING, onSubmit, onSkip })
           ))}
         </div>
 
-        {/* Actions */}
-        <div className="modal-actions">
-          <button className="btn-skip" onClick={onSkip}>
-            Skip
-          </button>
-          <button
-            className="btn-create"
-            onClick={handleSubmit}
-            disabled={!allFilled}
-          >
+        <div className={styles.actions}>
+          <button className={styles.skipBtn} onClick={onSkip}>Skip</button>
+          <button className={styles.createBtn} onClick={handleSubmit} disabled={!allFilled}>
             Create & Add to Bill
           </button>
         </div>
-
       </div>
     </div>
-  );
+  )
 }
 
-export default ProductNotFound;
+export default ProductNotFound

@@ -1,169 +1,133 @@
-import React, { useState, useRef } from 'react';
-import './VoiceInput.css';
+import { useState, useRef } from 'react'
+import styles from './VoiceInput.module.css'
 
-function VoiceInput() {
-  const [text, setText] = useState('');
-  const [isRecording, setIsRecording] = useState(false);
-  const [isTranscribing, setIsTranscribing] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState('');
+function VoiceInput({ onInvoiceGenerated }) {
+  const [text, setText] = useState('')
+  const [isRecording, setIsRecording] = useState(false)
+  const [isTranscribing, setIsTranscribing] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [error, setError] = useState('')
 
-  const mediaRecorderRef = useRef(null);
-  const audioChunksRef = useRef([]);
+  const mediaRecorderRef = useRef(null)
+  const audioChunksRef = useRef([])
 
-  // ── START / STOP RECORDING ──────────────────────────────────────────────────
   const handleRecord = async () => {
     if (isRecording) {
-      // Stop recording
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-    } else {
-      setError('');
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const mediaRecorder = new MediaRecorder(stream);
-        mediaRecorderRef.current = mediaRecorder;
-        audioChunksRef.current = [];
-
-        mediaRecorder.ondataavailable = (e) => {
-          if (e.data.size > 0) audioChunksRef.current.push(e.data);
-        };
-
-        mediaRecorder.onstop = async () => {
-          // Stop all mic tracks
-          stream.getTracks().forEach((t) => t.stop());
-
-          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-          await transcribeAudio(audioBlob);
-        };
-
-        mediaRecorder.start();
-        setIsRecording(true);
-      } catch (err) {
-        setError('Microphone access denied. Please allow microphone permission.');
-      }
+      mediaRecorderRef.current.stop()
+      setIsRecording(false)
+      return
     }
-  };
-
-  // ── SEND AUDIO TO WHISPER (backend) ────────────────────────────────────────
-  const transcribeAudio = async (audioBlob) => {
-    setIsTranscribing(true);
+    setError('')
     try {
-      const formData = new FormData();
-      formData.append('audio', audioBlob, 'recording.webm');
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mediaRecorder = new MediaRecorder(stream)
+      mediaRecorderRef.current = mediaRecorder
+      audioChunksRef.current = []
 
-      const res = await fetch('/api/transcribe', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        setText(data.text);
-      } else {
-        setError('Transcription failed: ' + data.message);
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data)
       }
-    } catch (err) {
-      setError('Could not connect to server for transcription.');
+
+      mediaRecorder.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop())
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
+        await transcribeAudio(audioBlob)
+      }
+
+      mediaRecorder.start()
+      setIsRecording(true)
+    } catch {
+      setError('Microphone access denied. Please allow microphone permission.')
+    }
+  }
+
+  const transcribeAudio = async (audioBlob) => {
+    setIsTranscribing(true)
+    try {
+      const formData = new FormData()
+      formData.append('audio', audioBlob, 'recording.webm')
+      const res = await fetch('/api/transcribe', { method: 'POST', body: formData })
+      const data = await res.json()
+      if (data.success) {
+        setText(data.text)
+      } else {
+        setError('Transcription failed: ' + data.message)
+      }
+    } catch {
+      setError('Could not connect to server for transcription.')
     } finally {
-      setIsTranscribing(false);
+      setIsTranscribing(false)
     }
-  };
+  }
 
-  // ── GENERATE BILL ───────────────────────────────────────────────────────────
   const handleGenerate = async () => {
-    if (!text.trim()) {
-      setError('Please record or type some text first.');
-      return;
-    }
-    setError('');
-    setIsGenerating(true);
-
+    if (!text.trim()) { setError('Please record or type some text first.'); return }
+    setError('')
+    setIsGenerating(true)
     try {
       const res = await fetch('/api/bill', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
-      });
-
-      const data = await res.json();
+      })
+      const data = await res.json()
       if (data.success) {
-        // TODO: pass invoice data to InvoiceTable component (next step)
-        console.log('Invoice generated:', data);
-        alert(`Invoice #${data.invoice_no} created! Total: ${data.total}`);
+        if (onInvoiceGenerated) onInvoiceGenerated(data)
       } else {
-        setError('Error: ' + data.message);
+        setError('Error: ' + data.message)
       }
-    } catch (err) {
-      setError('Could not connect to server.');
+    } catch {
+      setError('Could not connect to server.')
     } finally {
-      setIsGenerating(false);
+      setIsGenerating(false)
     }
-  };
+  }
 
-  // ── CLEAR ───────────────────────────────────────────────────────────────────
-  const handleClear = () => {
-    setText('');
-    setError('');
-  };
+  const handleClear = () => { setText(''); setError('') }
 
   return (
-    <div className="voice-input-card">
-      <h2 className="voice-input-title">🎙️ Voice Billing AI</h2>
+    <div className={styles.card}>
+      <h2 className={styles.title}>🎙️ Voice Billing AI</h2>
 
-      {/* Record Button */}
-      <div className="record-row">
+      <div className={styles.recordRow}>
         <button
-          className={`record-btn ${isRecording ? 'recording' : ''}`}
+          className={`${styles.recordBtn} ${isRecording ? styles.recording : ''}`}
           onClick={handleRecord}
           disabled={isTranscribing || isGenerating}
-          title={isRecording ? 'Stop Recording' : 'Start Recording'}
         >
-          {isRecording ? (
-            <>
-              <span className="rec-dot" /> Stop
-            </>
-          ) : (
-            <>▶ Record</>
-          )}
+          {isRecording ? <><span className={styles.recDot} /> Stop</> : <>▶ Record</>}
         </button>
-
-        {isTranscribing && (
-          <span className="status-text">⏳ Transcribing...</span>
-        )}
+        {isTranscribing && <span className={styles.statusText}>⏳ Transcribing...</span>}
       </div>
 
-      {/* Text Area + Clear */}
-      <div className="text-row">
-        <label className="text-label">Text</label>
-        <div className="textarea-wrapper">
+      <div className={styles.textRow}>
+        <label className={styles.textLabel}>Text</label>
+        <div className={styles.textareaWrapper}>
           <textarea
-            className="voice-textarea"
+            className={styles.textarea}
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder='e.g. "Teen Oppo A56 Glass, Do Charger, Ek Type C Cable"'
             rows={3}
             disabled={isTranscribing || isGenerating}
           />
-          <button className="clear-btn" onClick={handleClear} disabled={isTranscribing || isGenerating}>
+          <button className={styles.clearBtn} onClick={handleClear} disabled={isTranscribing || isGenerating}>
             Clear
           </button>
         </div>
       </div>
 
-      {/* Error */}
-      {error && <p className="error-msg">⚠️ {error}</p>}
+      {error && <p className={styles.errorMsg}>⚠️ {error}</p>}
 
-      {/* Generate Button */}
       <button
-        className="generate-btn"
+        className={styles.generateBtn}
         onClick={handleGenerate}
         disabled={isTranscribing || isGenerating || !text.trim()}
       >
         {isGenerating ? '⏳ Generating...' : 'Generate Bill'}
       </button>
     </div>
-  );
+  )
 }
 
-export default VoiceInput;
+export default VoiceInput

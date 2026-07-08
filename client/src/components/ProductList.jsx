@@ -1,100 +1,87 @@
-import React, { useState } from 'react';
-import './ProductList.css';
-
-// Sample static data — will be replaced with real API data later
-const SAMPLE_PRODUCTS = [
-  { _id: '1', brand: 'Oppo',    model: 'A56',  category: 'Glass',    name: 'Oppo A56 Tempered Glass',  price: 250 },
-  { _id: '2', brand: 'Samsung', model: 'A15',  category: 'Cover',    name: 'Samsung A15 Cover',        price: 180 },
-  { _id: '3', brand: '',        model: '',     category: 'Charger',  name: 'Charger 35W Original',     price: 650 },
-  { _id: '4', brand: '',        model: '',     category: 'Cable',    name: 'Type C Cable Original',    price: 120 },
-  { _id: '5', brand: 'Vivo',    model: 'Y17',  category: 'Glass',    name: 'Vivo Y17 Tempered Glass',  price: 200 },
-];
+import { useState, useEffect } from 'react'
+import styles from './ProductList.module.css'
 
 function ProductList() {
-  const [products]      = useState(SAMPLE_PRODUCTS);
-  const [search, setSearch] = useState('');
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [newProduct, setNewProduct] = useState({
-    brand: '', model: '', category: '', price: '',
-  });
+  const [products, setProducts] = useState([])
+  const [search, setSearch] = useState('')
+  const [showForm, setShowForm] = useState(false)
+  const [form, setForm] = useState({ brand: '', model: '', category: '', price: '' })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch('/api/products')
+      const data = await res.json()
+      if (data.success) setProducts(data.products)
+    } catch {
+      console.error('Failed to fetch products')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleFormChange = (e) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+
+  const handleSave = async () => {
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, price: parseFloat(form.price) }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setProducts((prev) => [...prev, data.product])
+        setForm({ brand: '', model: '', category: '', price: '' })
+        setShowForm(false)
+      }
+    } catch {
+      console.error('Failed to add product')
+    }
+  }
 
   const filtered = products.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.category.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const handleAddChange = (e) => {
-    setNewProduct((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+    (p.name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (p.category || '').toLowerCase().includes(search.toLowerCase())
+  )
 
   return (
-    <div className="product-list-card">
-
-      {/* Header */}
-      <div className="pl-header">
-        <h3 className="pl-title">📦 Products</h3>
-        <button className="btn-add-product" onClick={() => setShowAddForm(!showAddForm)}>
-          {showAddForm ? '✕ Cancel' : '+ Add Product'}
+    <div className={styles.card}>
+      <div className={styles.header}>
+        <h3 className={styles.title}>📦 Products</h3>
+        <button className={styles.addBtn} onClick={() => setShowForm(!showForm)}>
+          {showForm ? '✕ Cancel' : '+ Add Product'}
         </button>
       </div>
 
-      {/* Add Product Form */}
-      {showAddForm && (
-        <div className="add-product-form">
-          <div className="form-row">
-            <input
-              name="brand"
-              placeholder="Brand (e.g. Oppo)"
-              value={newProduct.brand}
-              onChange={handleAddChange}
-            />
-            <input
-              name="model"
-              placeholder="Model (e.g. A56)"
-              value={newProduct.model}
-              onChange={handleAddChange}
-            />
+      {showForm && (
+        <div className={styles.form}>
+          <div className={styles.formRow}>
+            <input name="brand"    placeholder="Brand (e.g. Oppo)"   value={form.brand}    onChange={handleFormChange} />
+            <input name="model"    placeholder="Model (e.g. A56)"    value={form.model}    onChange={handleFormChange} />
           </div>
-          <div className="form-row">
-            <input
-              name="category"
-              placeholder="Category (e.g. Glass) *"
-              value={newProduct.category}
-              onChange={handleAddChange}
-            />
-            <input
-              name="price"
-              type="number"
-              placeholder="Price (Rs.) *"
-              value={newProduct.price}
-              onChange={handleAddChange}
-              min="0"
-            />
+          <div className={styles.formRow}>
+            <input name="category" placeholder="Category (e.g. Glass) *" value={form.category} onChange={handleFormChange} />
+            <input name="price"    placeholder="Price (Rs.) *" type="number" min="0" value={form.price} onChange={handleFormChange} />
           </div>
-          <button
-            className="btn-save-product"
-            disabled={!newProduct.category || !newProduct.price}
-          >
+          <button className={styles.saveBtn} onClick={handleSave} disabled={!form.category || !form.price}>
             Save Product
           </button>
         </div>
       )}
 
-      {/* Search */}
-      <div className="pl-search-row">
-        <input
-          className="pl-search"
-          type="text"
-          placeholder="🔍 Search products..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <span className="pl-count">{filtered.length} products</span>
+      <div className={styles.searchRow}>
+        <input className={styles.search} type="text" placeholder="🔍 Search products..." value={search} onChange={(e) => setSearch(e.target.value)} />
+        <span className={styles.count}>{filtered.length} products</span>
       </div>
 
-      {/* Table */}
-      <div className="pl-table-wrapper">
-        <table className="pl-table">
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
           <thead>
             <tr>
               <th>Product Name</th>
@@ -104,28 +91,25 @@ function ProductList() {
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 ? (
-              <tr>
-                <td colSpan="4" className="pl-empty">No products found.</td>
-              </tr>
+            {loading ? (
+              <tr><td colSpan="4" className={styles.empty}>Loading...</td></tr>
+            ) : filtered.length === 0 ? (
+              <tr><td colSpan="4" className={styles.empty}>No products found.</td></tr>
             ) : (
               filtered.map((product) => (
                 <tr key={product._id}>
                   <td>{product.name}</td>
-                  <td><span className="category-badge">{product.category}</span></td>
-                  <td className="price-cell">Rs. {product.price.toLocaleString()}</td>
-                  <td>
-                    <button className="btn-edit-price">Edit Price</button>
-                  </td>
+                  <td><span className={styles.badge}>{product.category}</span></td>
+                  <td className={styles.price}>Rs. {product.price.toLocaleString()}</td>
+                  <td><button className={styles.editBtn}>Edit Price</button></td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
       </div>
-
     </div>
-  );
+  )
 }
 
-export default ProductList;
+export default ProductList
