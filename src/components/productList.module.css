@@ -24,4 +24,12 @@
 .price { font-weight:600; color:#065f46; }
 .editBtn { background:#f3f4f6; color:#374151; border:1.5px solid #d1d5db; border-radius:6px; padding:6px 12px; font-size:.82rem; font-weight:600; cursor:pointer; transition:background .2s; }
 .editBtn:hover { background:#e5e7eb; }
+.editRow { display:flex; align-items:center; gap:6px; }
+.editInput { width:90px; border:1.5px solid #d1d5db; border-radius:6px; padding:6px 8px; font-size:.85rem; outline:none; font-family:inherit; transition:border-color .2s; }
+.editInput:focus { border-color:#4f46e5; }
+.saveEditBtn { background:#10b981; color:#fff; border:none; border-radius:6px; padding:6px 10px; font-size:.85rem; font-weight:700; cursor:pointer; transition:background .2s; }
+.saveEditBtn:hover:not(:disabled) { background:#059669; }
+.saveEditBtn:disabled { background:#9ca3af; cursor:not-allowed; }
+.cancelBtn { background:#f3f4f6; color:#374151; border:1.5px solid #d1d5db; border-radius:6px; padding:6px 10px; font-size:.85rem; font-weight:700; cursor:pointer; transition:background .2s; }
+.cancelBtn:hover { background:#e5e7eb; }
 .empty { text-align:center; color:#9ca3af; padding:32px; font-size:.95rem; }

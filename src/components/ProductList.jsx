@@ -7,6 +7,8 @@ function ProductList() {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ brand: '', model: '', category: '', price: '' })
   const [loading, setLoading] = useState(true)
+  const [editingId, setEditingId] = useState(null)
+  const [editPrice, setEditPrice] = useState('')
 
   useEffect(() => { fetchProducts() }, [])
 
@@ -33,6 +35,22 @@ function ProductList() {
         setShowForm(false)
       }
     } catch { console.error('Failed to add product') }
+  }
+
+  const handleEditPrice = async (id) => {
+    try {
+      const res = await fetch(`/api/products/${id}/price`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ price: parseFloat(editPrice) }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setProducts(prev => prev.map(p => p._id === id ? { ...p, price: data.product.price } : p))
+        setEditingId(null)
+        setEditPrice('')
+      }
+    } catch { console.error('Failed to update price') }
   }
 
   const filtered = products.filter(p =>
@@ -81,7 +99,18 @@ function ProductList() {
                 <td>{p.name}</td>
                 <td><span className={styles.badge}>{p.category}</span></td>
                 <td className={styles.price}>Rs. {p.price.toLocaleString()}</td>
-                <td><button className={styles.editBtn}>Edit Price</button></td>
+                <td>
+                  {editingId === p._id ? (
+                    <div className={styles.editRow}>
+                      <input type="number" className={styles.editInput} value={editPrice}
+                        onChange={e => setEditPrice(e.target.value)} placeholder="New price" min="0" autoFocus />
+                      <button className={styles.saveEditBtn} onClick={() => handleEditPrice(p._id)} disabled={!editPrice}>✓</button>
+                      <button className={styles.cancelBtn} onClick={() => { setEditingId(null); setEditPrice('') }}>✕</button>
+                    </div>
+                  ) : (
+                    <button className={styles.editBtn} onClick={() => { setEditingId(p._id); setEditPrice(String(p.price)) }}>Edit Price</button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
