@@ -6,9 +6,9 @@ function Navbar() {
     <nav className={styles.navbar}>
       <span className={styles.brand}>🎙️ Voice Billing AI</span>
       <div className={styles.links}>
-        <NavLink to="/"         className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>Billing</NavLink>
-        <NavLink to="/products" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>Products</NavLink>
-        <NavLink to="/history"  className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>History</NavLink>
+        <NavLink to="/"         className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>🎙️ Billing</NavLink>
+        <NavLink to="/products" className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>📦 Products</NavLink>
+        <NavLink to="/history"  className={({ isActive }) => isActive ? `${styles.link} ${styles.active}` : styles.link}>📋 History</NavLink>
       </div>
     </nav>
   )
