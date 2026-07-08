@@ -4,7 +4,7 @@ function InvoiceTable({ invoice }) {
   if (!invoice || !invoice.items || invoice.items.length === 0) return null
 
   return (
-    <div className={styles.card}>
+    <div className={styles.card} id="invoice-print">
       <div className={styles.header}>
         <h3 className={styles.title}>🧾 Invoice</h3>
         <span className={styles.invoiceNo}>{invoice.invoice_no}</span>
