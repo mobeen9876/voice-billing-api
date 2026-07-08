@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const path    = require('path');
-const connectDB = require('./src/db/database');
+const connectDB = require('./db/database');
 
 const app = express();
 
@@ -16,20 +16,19 @@ app.use((req, res, next) => {
 });
 
 // ─── API ROUTES ───────────────────────────────────────────────────────────────
-app.use('/api/bill',       require('./src/routes/billRoutes'));
-app.use('/api/parse',      require('./src/routes/parserRoutes'));
-app.use('/api/products',   require('./src/routes/productRoutes'));
-app.use('/api/invoices',   require('./src/routes/invoiceRoutes'));
-app.use('/api/aliases',    require('./src/routes/aliasRoutes'));
-app.use('/api/transcribe', require('./src/routes/transcribeRoutes'));
+app.use('/api/bill',       require('./routes/billRoutes'));
+app.use('/api/parse',      require('./routes/parserRoutes'));
+app.use('/api/products',   require('./routes/productRoutes'));
+app.use('/api/invoices',   require('./routes/invoiceRoutes'));
+app.use('/api/aliases',    require('./routes/aliasRoutes'));
+app.use('/api/transcribe', require('./routes/transcribeRoutes'));
 
 // ─── SERVE REACT FRONTEND ─────────────────────────────────────────────────────
-const clientBuild = path.join(__dirname, 'client', 'dist');
-app.use(express.static(clientBuild));
+const clientDist = path.join(__dirname, 'dist');
+app.use(express.static(clientDist));
 
-// All non-API routes → React app
 app.get('*', (req, res) => {
-  res.sendFile(path.join(clientBuild, 'index.html'));
+  res.sendFile(path.join(clientDist, 'index.html'));
 });
 
 // ─── ERROR HANDLER ────────────────────────────────────────────────────────────

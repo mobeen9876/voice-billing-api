@@ -1,0 +1,24 @@
+.card { background:#fff; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,.10); padding:32px 28px; max-width:680px; width:100%; margin:0 auto; }
+.title { font-size:1.5rem; font-weight:700; color:#1a1a2e; margin:0 0 24px; text-align:center; }
+.recordRow { display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+.recordBtn { display:flex; align-items:center; gap:8px; background:#4f46e5; color:#fff; border:none; border-radius:50px; padding:10px 24px; font-size:1rem; font-weight:600; cursor:pointer; transition:background .2s, transform .1s; }
+.recordBtn:hover:not(:disabled) { background:#4338ca; transform:scale(1.03); }
+.recordBtn:disabled { opacity:.55; cursor:not-allowed; }
+.recording { background:#ef4444 !important; animation:pulse 1.2s infinite; }
+.recDot { width:10px; height:10px; border-radius:50%; background:#fff; display:inline-block; }
+@keyframes pulse { 0%,100% { box-shadow:0 0 0 0 rgba(239,68,68,.5); } 50% { box-shadow:0 0 0 8px rgba(239,68,68,0); } }
+.statusText { color:#6b7280; font-size:.9rem; }
+.textRow { margin-bottom:12px; }
+.textLabel { display:block; font-size:.85rem; font-weight:600; color:#374151; margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em; }
+.textareaWrapper { display:flex; gap:10px; align-items:flex-start; }
+.textarea { flex:1; border:1.5px solid #d1d5db; border-radius:10px; padding:12px 14px; font-size:1rem; color:#1f2937; resize:vertical; min-height:80px; font-family:inherit; outline:none; transition:border-color .2s; }
+.textarea:focus { border-color:#4f46e5; box-shadow:0 0 0 3px rgba(79,70,229,.15); }
+.textarea::placeholder { color:#9ca3af; }
+.textarea:disabled { background:#f9fafb; }
+.clearBtn { background:#f3f4f6; color:#374151; border:1.5px solid #d1d5db; border-radius:8px; padding:10px 16px; font-size:.9rem; font-weight:600; cursor:pointer; white-space:nowrap; transition:background .2s; }
+.clearBtn:hover:not(:disabled) { background:#e5e7eb; }
+.clearBtn:disabled { opacity:.5; cursor:not-allowed; }
+.errorMsg { color:#dc2626; font-size:.88rem; margin:8px 0 12px; padding:8px 12px; background:#fef2f2; border-radius:8px; border:1px solid #fecaca; }
+.generateBtn { display:block; width:100%; background:#10b981; color:#fff; border:none; border-radius:10px; padding:14px; font-size:1.05rem; font-weight:700; cursor:pointer; margin-top:8px; transition:background .2s, transform .1s; }
+.generateBtn:hover:not(:disabled) { background:#059669; transform:scale(1.01); }
+.generateBtn:disabled { background:#9ca3af; cursor:not-allowed; transform:none; }
