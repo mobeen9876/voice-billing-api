@@ -2,13 +2,13 @@
   "name": "voice-billing-ai",
   "private": true,
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "server": "nodemon server.js",
     "start": "node server.js",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "vercel-build": "vite build"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
