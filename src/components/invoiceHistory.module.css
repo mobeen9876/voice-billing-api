@@ -1,4 +1,5 @@
-.card { background:#fff; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,.10); padding:28px; max-width:680px; width:100%; margin:0 auto; }
+.card {
+     background:#fff; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,.10); padding:28px; max-width:680px; width:100%; margin:0 auto; }
 .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
 .title { font-size:1.2rem; font-weight:700; color:#1a1a2e; margin:0; }
 .count { font-size:.85rem; color:#6b7280; background:#f3f4f6; padding:4px 10px; border-radius:20px; }
@@ -25,3 +26,8 @@
 .detailTable th:last-child, .detailTable td:last-child { text-align:right; }
 .detailTable td { padding:10px 14px; color:#1f2937; border-bottom:1px solid #f3f4f6; }
 .totalRow td { font-weight:800; color:#1a1a2e; border-top:2px solid #e5e7eb; padding:12px 14px; }
+.pagination { display:flex; align-items:center; justify-content:center; gap:16px; margin-top:20px; padding-top:16px; border-top:1px solid #f3f4f6; }
+.pageBtn { background:#f3f4f6; color:#374151; border:1.5px solid #d1d5db; border-radius:8px; padding:7px 14px; font-size:.85rem; font-weight:600; cursor:pointer; transition:background .2s; }
+.pageBtn:hover:not(:disabled) { background:#e5e7eb; }
+.pageBtn:disabled { opacity:.5; cursor:not-allowed; }
+.pageInfo { font-size:.85rem; color:#6b7280; font-weight:600; }

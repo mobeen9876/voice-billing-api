@@ -5,6 +5,8 @@ const {
   getProduct,
   addProduct,
   updatePrice,
+  updateProductFull,
+  removeProduct,
   searchFromText,
 } = require('../controllers/productController');
 
@@ -12,6 +14,8 @@ const {
 // POST   /api/products         - create product
 // GET    /api/products/:id     - get one
 // PUT    /api/products/:id/price - update price
+// PUT    /api/products/:id     - update full product (brand/model/category/name/price)
+// DELETE /api/products/:id     - delete product
 // POST   /api/products/search  - search + confidence engine
 
 router.get('/', listProducts);
@@ -19,5 +23,7 @@ router.post('/search', searchFromText);   // must be before /:id
 router.post('/', addProduct);
 router.get('/:id', getProduct);
 router.put('/:id/price', updatePrice);
+router.put('/:id', updateProductFull);
+router.delete('/:id', removeProduct);
 
 module.exports = router;

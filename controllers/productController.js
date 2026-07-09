@@ -3,6 +3,8 @@ const {
   applyConfidenceEngine,
   createProduct,
   updateProductPrice,
+  updateProduct,
+  deleteProduct,
   getAllProducts,
   getProductById,
 } = require('../services/productService');
@@ -52,6 +54,30 @@ async function updatePrice(req, res) {
   }
 }
 
+async function updateProductFull(req, res) {
+  try {
+    const { brand, model, category, name, price } = req.body;
+    const updated = await updateProduct(req.params.id, {
+      brand, model, category, name,
+      price: price !== undefined && price !== '' ? parseFloat(price) : undefined,
+    });
+    if (!updated) return res.status(404).json({ success: false, message: 'Product not found.' });
+    return res.json({ success: true, product: updated });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+}
+
+async function removeProduct(req, res) {
+  try {
+    const deleted = await deleteProduct(req.params.id);
+    if (!deleted) return res.status(404).json({ success: false, message: 'Product not found.' });
+    return res.json({ success: true, message: 'Product deleted.' });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+}
+
 async function searchFromText(req, res) {
   try {
     const { text } = req.body;
@@ -67,4 +93,4 @@ async function searchFromText(req, res) {
   }
 }
 
-module.exports = { listProducts, getProduct, addProduct, updatePrice, searchFromText };
+module.exports = { listProducts, getProduct, addProduct, updatePrice, updateProductFull, removeProduct, searchFromText };

@@ -4,10 +4,10 @@
 .addBtn { background:#4f46e5; color:#fff; border:none; border-radius:8px; padding:9px 18px; font-size:.9rem; font-weight:600; cursor:pointer; transition:background .2s; }
 .addBtn:hover { background:#4338ca; }
 .form { background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:12px; padding:20px; margin-bottom:20px; display:flex; flex-direction:column; gap:12px; }
-.formRow { display:flex; gap:12px; }
+.formRow { display:flex; gap:12px; margin-bottom:12px; }
 .formRow input { flex:1; border:1.5px solid #d1d5db; border-radius:8px; padding:10px 12px; font-size:.95rem; outline:none; font-family:inherit; transition:border-color .2s; }
 .formRow input:focus { border-color:#4f46e5; box-shadow:0 0 0 3px rgba(79,70,229,.12); }
-.saveBtn { background:#10b981; color:#fff; border:none; border-radius:8px; padding:10px 20px; font-size:.95rem; font-weight:600; cursor:pointer; align-self:flex-end; transition:background .2s; }
+.saveBtn { background:#10b981; color:#fff; border:none; border-radius:8px; padding:10px 20px; font-size:.95rem; font-weight:600; cursor:pointer; transition:background .2s; }
 .saveBtn:hover:not(:disabled) { background:#059669; }
 .saveBtn:disabled { background:#9ca3af; cursor:not-allowed; }
 .searchRow { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
@@ -24,12 +24,21 @@
 .price { font-weight:600; color:#065f46; }
 .editBtn { background:#f3f4f6; color:#374151; border:1.5px solid #d1d5db; border-radius:6px; padding:6px 12px; font-size:.82rem; font-weight:600; cursor:pointer; transition:background .2s; }
 .editBtn:hover { background:#e5e7eb; }
-.editRow { display:flex; align-items:center; gap:6px; }
-.editInput { width:90px; border:1.5px solid #d1d5db; border-radius:6px; padding:6px 8px; font-size:.85rem; outline:none; font-family:inherit; transition:border-color .2s; }
-.editInput:focus { border-color:#4f46e5; }
-.saveEditBtn { background:#10b981; color:#fff; border:none; border-radius:6px; padding:6px 10px; font-size:.85rem; font-weight:700; cursor:pointer; transition:background .2s; }
-.saveEditBtn:hover:not(:disabled) { background:#059669; }
-.saveEditBtn:disabled { background:#9ca3af; cursor:not-allowed; }
-.cancelBtn { background:#f3f4f6; color:#374151; border:1.5px solid #d1d5db; border-radius:6px; padding:6px 10px; font-size:.85rem; font-weight:700; cursor:pointer; transition:background .2s; }
-.cancelBtn:hover { background:#e5e7eb; }
 .empty { text-align:center; color:#9ca3af; padding:32px; font-size:.95rem; }
+
+/* Modal (Add / Edit) — small popup window instead of pushing the page down */
+.overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; z-index:999; padding:16px; }
+.modal { background:#fff; border-radius:16px; box-shadow:0 8px 40px rgba(0,0,0,.18); padding:24px; max-width:460px; width:100%; animation:slideUp .2s ease; }
+@keyframes slideUp { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+.modalHeader { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.modalTitle { font-size:1.05rem; font-weight:700; color:#1a1a2e; margin:0; }
+.closeBtn { background:none; border:none; color:#6b7280; font-size:1rem; cursor:pointer; padding:2px 6px; border-radius:4px; transition:background .15s; }
+.closeBtn:hover { background:#e5e7eb; }
+.modalActions { display:flex; align-items:center; justify-content:space-between; margin-top:8px; }
+.deleteBtn { background:#fee2e2; color:#b91c1c; border:1.5px solid #fecaca; border-radius:8px; padding:9px 16px; font-size:.9rem; font-weight:600; cursor:pointer; transition:background .2s; }
+.deleteBtn:hover { background:#fecaca; }
+.confirmDelete { display:flex; align-items:center; gap:8px; font-size:.85rem; color:#b91c1c; }
+.confirmBtn { background:#dc2626; color:#fff; border:none; border-radius:6px; padding:7px 12px; font-size:.82rem; font-weight:700; cursor:pointer; transition:background .2s; }
+.confirmBtn:hover { background:#b91c1c; }
+.cancelBtn { background:#f3f4f6; color:#374151; border:1.5px solid #d1d5db; border-radius:6px; padding:7px 12px; font-size:.82rem; font-weight:700; cursor:pointer; transition:background .2s; }
+.cancelBtn:hover { background:#e5e7eb; }

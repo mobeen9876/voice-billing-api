@@ -118,6 +118,26 @@ async function updateProductPrice(id, price) {
 }
 
 /**
+ * Full product update (brand, model, category, name, price)
+ */
+async function updateProduct(id, { brand, model, category, name, price }) {
+  const update = {};
+  if (brand !== undefined) update.brand = brand;
+  if (model !== undefined) update.model = model;
+  if (category !== undefined) update.category = category;
+  if (name !== undefined) update.name = name;
+  if (price !== undefined) update.price = price;
+  return Product.findByIdAndUpdate(id, update, { new: true, runValidators: true });
+}
+
+/**
+ * Delete a product
+ */
+async function deleteProduct(id) {
+  return Product.findByIdAndDelete(id);
+}
+
+/**
  * Get all products
  */
 async function getAllProducts() {
@@ -137,6 +157,8 @@ module.exports = {
   applyConfidenceEngine,
   createProduct,
   updateProductPrice,
+  updateProduct,
+  deleteProduct,
   getAllProducts,
   getProductById,
 };
